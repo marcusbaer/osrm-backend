@@ -151,7 +151,7 @@ class InternalDataFacade final : public BaseDataFacade
             throw util::exception("Could not open " + timestamp_path.string() + " for reading.");
         }
 
-        auto timestamp_size = storage::io::readTimestampSize(timestamp_stream);
+        auto timestamp_size = storage::io::readTimestampCharCount(timestamp_stream);
         m_timestamp.resize(timestamp_size);
         storage::io::readTimestamp(timestamp_stream, &m_timestamp.front(), timestamp_size);
     }
@@ -190,10 +190,10 @@ class InternalDataFacade final : public BaseDataFacade
             throw util::exception("Could not open " + nodes_file_path.string() + " for reading.");
         }
 
-        std::uint32_t number_of_coordinates = storage::io::readNodesSize(nodes_input_stream);
+        auto number_of_coordinates = storage::io::readElementCount<std::uint32_t>(nodes_input_stream);
         m_coordinate_list.resize(number_of_coordinates);
         m_osmnodeid_list.reserve(number_of_coordinates);
-        storage::io::readNodesData(
+        storage::io::readNodes(
             nodes_input_stream, m_coordinate_list.data(), m_osmnodeid_list, number_of_coordinates);
 
         boost::filesystem::ifstream edges_input_stream(edges_file_path, std::ios::binary);
@@ -201,7 +201,7 @@ class InternalDataFacade final : public BaseDataFacade
         {
             throw util::exception("Could not open " + edges_file_path.string() + " for reading.");
         }
-        auto number_of_edges = storage::io::readEdgesSize(edges_input_stream);
+        auto number_of_edges = storage::io::readElementCount<std::uint32_t>(edges_input_stream);
         m_via_geometry_list.resize(number_of_edges);
         m_name_ID_list.resize(number_of_edges);
         m_turn_instruction_list.resize(number_of_edges);
@@ -211,16 +211,16 @@ class InternalDataFacade final : public BaseDataFacade
         m_pre_turn_bearing.resize(number_of_edges);
         m_post_turn_bearing.resize(number_of_edges);
 
-        storage::io::readEdgesData(edges_input_stream,
-                                   m_via_geometry_list.data(),
-                                   m_name_ID_list.data(),
-                                   m_turn_instruction_list.data(),
-                                   m_lane_data_id.data(),
-                                   m_travel_mode_list.data(),
-                                   m_entry_class_id_list.data(),
-                                   m_pre_turn_bearing.data(),
-                                   m_post_turn_bearing.data(),
-                                   number_of_edges);
+        storage::io::readEdges(edges_input_stream,
+                               m_via_geometry_list.data(),
+                               m_name_ID_list.data(),
+                               m_turn_instruction_list.data(),
+                               m_lane_data_id.data(),
+                               m_travel_mode_list.data(),
+                               m_entry_class_id_list.data(),
+                               m_pre_turn_bearing.data(),
+                               m_post_turn_bearing.data(),
+                               number_of_edges);
     }
 
     void LoadCoreInformation(const boost::filesystem::path &core_data_file)
@@ -292,7 +292,7 @@ class InternalDataFacade final : public BaseDataFacade
         }
         BOOST_ASSERT(datasources_stream);
 
-        auto number_of_datasources = storage::io::readDatasourceIndexesSize(datasources_stream);
+        auto number_of_datasources = storage::io::readElementCount<std::uint64_t>(datasources_stream);
         if (number_of_datasources > 0)
         {
             m_datasource_list.resize(number_of_datasources);
@@ -308,7 +308,7 @@ class InternalDataFacade final : public BaseDataFacade
         }
         BOOST_ASSERT(datasourcenames_stream);
 
-        auto datasource_names_data = storage::io::readDatasourceNamesData(datasourcenames_stream);
+        auto datasource_names_data = storage::io::readDatasourceNames(datasourcenames_stream);
         m_datasource_names.resize(datasource_names_data.lengths.size());
         for (std::uint32_t i = 0; i < datasource_names_data.lengths.size(); ++i)
         {

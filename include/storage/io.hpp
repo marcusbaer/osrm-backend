@@ -17,6 +17,15 @@ namespace storage
 namespace io
 {
 
+// Returns the number of elements in a file
+template <typename CountT>
+inline CountT readElementCount(boost::filesystem::ifstream &input_stream)
+{
+    CountT number_of_elements = 0;
+    input_stream.read((char *)&number_of_elements, sizeof(CountT));
+    return number_of_elements;
+}
+
 inline std::size_t readPropertiesSize() { return 1; }
 
 template <typename PropertiesT>
@@ -75,8 +84,8 @@ void readHSGR(boost::filesystem::ifstream &input_stream,
     input_stream.read(reinterpret_cast<char *>(node_buffer), number_of_nodes * sizeof(NodeT));
     input_stream.read(reinterpret_cast<char *>(edge_buffer), number_of_edges * sizeof(EdgeT));
 }
-// Returns the size of the timestamp in a file
-inline std::uint32_t readTimestampSize(boost::filesystem::ifstream &timestamp_input_stream)
+// Returns the character count (length) of the timestamp in a file
+inline std::uint32_t readTimestampCharCount(boost::filesystem::ifstream &timestamp_input_stream)
 {
     timestamp_input_stream.seekg(0, timestamp_input_stream.end);
     auto length = timestamp_input_stream.tellg();
@@ -93,17 +102,9 @@ inline void readTimestamp(boost::filesystem::ifstream &timestamp_input_stream,
     timestamp_input_stream.read(timestamp, timestamp_length * sizeof(char));
 }
 
-// Returns the number of edges in a .edges file
-inline std::uint32_t readEdgesSize(boost::filesystem::ifstream &edges_input_stream)
-{
-    std::uint32_t number_of_edges;
-    edges_input_stream.read((char *)&number_of_edges, sizeof(std::uint32_t));
-    return number_of_edges;
-}
-
 // Reads edge data from .edge files which includes its
 // geometry, name ID, turn instruction, lane data ID, travel mode, entry class ID
-// Needs to be called after readEdgesSize() to get the correct offset in the stream
+// Needs to be called after readElementCount() to get the correct offset in the stream
 template <typename GeometryIDT,
           typename NameIDT,
           typename TurnInstructionT,
@@ -112,16 +113,16 @@ template <typename GeometryIDT,
           typename EntryClassIDT,
           typename PreTurnBearingT,
           typename PostTurnBearingT>
-void readEdgesData(boost::filesystem::ifstream &edges_input_stream,
-                   GeometryIDT geometry_list[],
-                   NameIDT name_id_list[],
-                   TurnInstructionT turn_instruction_list[],
-                   LaneDataIDT lane_data_id_list[],
-                   TravelModeT travel_mode_list[],
-                   EntryClassIDT entry_class_id_list[],
-                   PreTurnBearingT pre_turn_bearing_list[],
-                   PostTurnBearingT post_turn_bearing_list[],
-                   std::uint32_t number_of_edges)
+void readEdges(boost::filesystem::ifstream &edges_input_stream,
+               GeometryIDT geometry_list[],
+               NameIDT name_id_list[],
+               TurnInstructionT turn_instruction_list[],
+               LaneDataIDT lane_data_id_list[],
+               TravelModeT travel_mode_list[],
+               EntryClassIDT entry_class_id_list[],
+               PreTurnBearingT pre_turn_bearing_list[],
+               PostTurnBearingT post_turn_bearing_list[],
+               std::uint32_t number_of_edges)
 {
     BOOST_ASSERT(geometry_list);
     BOOST_ASSERT(name_id_list);
@@ -144,18 +145,11 @@ void readEdgesData(boost::filesystem::ifstream &edges_input_stream,
     }
 }
 
-// Returns the number of nodes in a .nodes file
-inline std::uint32_t readNodesSize(boost::filesystem::ifstream &nodes_input_stream)
-{
-    std::uint32_t number_of_coordinates;
-    nodes_input_stream.read((char *)&number_of_coordinates, sizeof(std::uint32_t));
-    return number_of_coordinates;
-}
 
 // Reads coordinates and OSM node IDs from .nodes files
-// Needs to be called after readNodesSize() to get the correct offset in the stream
+// Needs to be called after readElementCount() to get the correct offset in the stream
 template <typename CoordinateT, typename OSMNodeIDVectorT>
-void readNodesData(boost::filesystem::ifstream &nodes_input_stream,
+void readNodes(boost::filesystem::ifstream &nodes_input_stream,
                    CoordinateT coordinate_list[],
                    OSMNodeIDVectorT &osmnodeid_list,
                    std::uint32_t number_of_coordinates)
@@ -171,18 +165,10 @@ void readNodesData(boost::filesystem::ifstream &nodes_input_stream,
     }
 }
 
-// Returns the number of indexes in a .datasource_indexes file
-inline std::uint64_t
-readDatasourceIndexesSize(boost::filesystem::ifstream &datasource_indexes_input_stream)
-{
-    std::uint64_t number_of_datasource_indexes;
-    datasource_indexes_input_stream.read(reinterpret_cast<char *>(&number_of_datasource_indexes),
-                                         sizeof(std::uint64_t));
-    return number_of_datasource_indexes;
-}
+
 
 // Reads datasource_indexes
-// Needs to be called after readDatasourceIndexesSize() to get the correct offset in the stream
+// Needs to be called after readElementCount() to get the correct offset in the stream
 inline void readDatasourceIndexes(boost::filesystem::ifstream &datasource_indexes_input_stream,
                                   uint8_t datasource_buffer[],
                                   std::uint32_t number_of_datasource_indexes)
@@ -201,7 +187,7 @@ struct DatasourceNamesData
     std::vector<std::uint32_t> lengths;
 };
 inline DatasourceNamesData
-readDatasourceNamesData(boost::filesystem::ifstream &datasource_names_input_stream)
+readDatasourceNames(boost::filesystem::ifstream &datasource_names_input_stream)
 {
     DatasourceNamesData datasource_names_data;
     if (datasource_names_input_stream)
@@ -219,16 +205,9 @@ readDatasourceNamesData(boost::filesystem::ifstream &datasource_names_input_stre
     return datasource_names_data;
 }
 
-// Returns the number of ram indexes
-inline std::uint32_t readRamIndexSize(boost::filesystem::ifstream &ram_index_input_stream)
-{
-    std::uint32_t tree_size = 0;
-    ram_index_input_stream.read((char *)&tree_size, sizeof(std::uint32_t));
-    return tree_size;
-}
 
 template <typename RTreeNodeT>
-void readRamIndexData(boost::filesystem::ifstream &ram_index_input_stream,
+void readRamIndex(boost::filesystem::ifstream &ram_index_input_stream,
                  RTreeNodeT rtree_buffer[],
                  std::uint32_t tree_size)
 {

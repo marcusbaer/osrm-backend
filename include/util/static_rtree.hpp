@@ -358,10 +358,10 @@ class StaticRTree
         boost::filesystem::ifstream tree_node_file(node_file, std::ios::binary);
 
 
-        std::uint32_t tree_size = storage::io::readRamIndexSize(tree_node_file);
+        auto tree_size = storage::io::readElementCount<std::uint32_t>(tree_node_file);
 
         m_search_tree.resize(tree_size);
-        storage::io::readRamIndexData(tree_node_file, &m_search_tree[0], tree_size);
+        storage::io::readRamIndex(tree_node_file, &m_search_tree[0], tree_size);
 
         MapLeafNodesFile(leaf_file);
     }
