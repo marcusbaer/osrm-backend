@@ -21,13 +21,15 @@ Feature: Slipways and Dedicated Turn Lanes
 
         And the ways
             | nodes | highway    | name   |
-            | abcd  | trunk      | first  |
+            | abc   | trunk      | first  |
+            | cd    | trunk      | first  |
             | bhf   | trunk_link |        |
-            | ecfg  | primary    | second |
+            | cfg   | primary    | second |
+            | ec    | primary    | second |
 
         And the relations
             | type        | way:from | way:to | node:via | restriction   |
-            | restriction | abcd     | ecfg   | c        | no_right_turn |
+            | restriction | abc      | cfg    | c        | no_right_turn |
 
        When I route I should get
             | waypoints | route               | turns                           |
@@ -50,13 +52,15 @@ Feature: Slipways and Dedicated Turn Lanes
 
         And the ways
             | nodes | highway    | name   | maxspeed |
-            | abcd  | trunk      | first  | 70       |
+            | abc   | trunk      | first  | 70       |
+            | cd    | trunk      | first  | 70       |
             | bhf   | trunk_link |        | 2        |
-            | ecfg  | primary    | second | 50       |
+            | cfg   | primary    | second | 50       |
+            | ec    | primary    | second | 50       |
 
         And the relations
             | type        | way:from | way:to | node:via | restriction   |
-            | restriction | abcd     | ecfg   | c        | no_right_turn |
+            | restriction | abc      | cfg    | c        | no_right_turn |
 
        When I route I should get
             | waypoints | route               | turns                           |
