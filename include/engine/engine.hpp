@@ -1,14 +1,12 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
-#include "storage/shared_barriers.hpp"
 #include "engine/api/match_parameters.hpp"
 #include "engine/api/nearest_parameters.hpp"
 #include "engine/api/route_parameters.hpp"
 #include "engine/api/table_parameters.hpp"
 #include "engine/api/tile_parameters.hpp"
 #include "engine/api/trip_parameters.hpp"
-#include "engine/data_watchdog.hpp"
 #include "engine/datafacade/datafacade_base.hpp"
 #include "engine/engine_config.hpp"
 #include "engine/plugins/match.hpp"
@@ -19,6 +17,9 @@
 #include "engine/plugins/viaroute.hpp"
 #include "engine/status.hpp"
 #include "util/json_container.hpp"
+
+#include "engine/data_watchdog.hpp"
+#include "storage/shared_barriers.hpp"
 
 #include <memory>
 #include <mutex>

@@ -8,7 +8,6 @@
 #include "storage/shared_memory.hpp"
 
 #include <boost/interprocess/sync/named_upgradable_mutex.hpp>
-#include <boost/thread/lock_types.hpp>
 #include <boost/thread/locks.hpp>
 #include <boost/thread/shared_mutex.hpp>
 
