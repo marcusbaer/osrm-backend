@@ -5,6 +5,7 @@
 #include "engine/api/match_parameters.hpp"
 #include "engine/map_matching/bayes_classifier.hpp"
 #include "util/coordinate_calculation.hpp"
+#include "util/coordinate_tidy.hpp"
 #include "util/integer_range.hpp"
 #include "util/json_util.hpp"
 #include "util/string_util.hpp"
@@ -150,6 +151,8 @@ Status MatchPlugin::HandleRequest(const std::shared_ptr<datafacade::BaseDataFaca
 
                        });
     }
+
+    auto tidied = util::tidy::tidy(parameters.coordinates, parameters.timestamps);
 
     auto candidates_lists = GetPhantomNodesInRange(*facade, parameters, search_radiuses);
 
