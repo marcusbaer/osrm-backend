@@ -1320,17 +1320,19 @@ Feature: Simple Turns
 
     Scenario: No Slight Right over Jannowitzbruecke -- less extreme
         Given the node map
-            |   |   |   | l |   | m |   |   |   |
-            |   |   |   |   |   |   |   |   |   |
-            | f |   |   |   |   |   |   |   |   |
-            |   |   |   | g |   | h |   |   |   |
-            |   |   |   |   |   |   |   |   |   |
-            |   |   |   |   |   |   |   |   | i |
-            | a |   |   |   |   |   |   |   |   |
-            |   |   |   | b |   | c |   |   |   |
-            |   |   |   |   |   |   |   |   |   |
-            |   |   |   |   |   |   |   |   | e |
-            |   |   |   | j |   | k |   |   |   |
+         """
+                  l   m
+                  |   |
+            f_    |   |
+               ' 'g   h_
+                  |   |  '\_
+                  |   |     i
+            a_    |   |
+               '_ b   c_
+                  |   |  \_
+                  |   |     e
+                  j   k
+         """
 
         And the ways
             | nodes | name          | highway   | oneway |
@@ -1347,17 +1349,19 @@ Feature: Simple Turns
 
     Scenario: No Slight Right over Jannowitzbruecke
         Given the node map
-            |   |   |   | l |   | m |   |   |   |
-            |   |   |   |   |   |   |   |   |   |
-            |   |   |   |   |   |   |   |   |   |
-            |   |   |   | g |   | h |   |   |   |
-            | f |   |   |   |   |   |   |   |   |
-            |   |   |   |   |   |   |   |   | i |
-            |   |   |   |   |   |   |   |   |   |
-            |   |   |   | b |   | c |   |   |   |
-            | a |   |   |   |   |   |   |   | d |
-            |   |   |   |   |   |   |   |   |   |
-            |   |   |   | j |   | k |   |   |   |
+         """
+                  l   m
+                  |   |
+                  |   |
+              _ _ g   h_
+            f'    |   |  '_
+                  |   |     i
+                  |   |
+               _ _b   c__
+            a'    |   |    'd
+                  |   |
+                  j   k
+         """
 
         And the ways
             | nodes | name          | highway   | oneway |

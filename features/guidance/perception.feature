@@ -33,15 +33,17 @@ Feature: Simple Turns
 
     Scenario: Turning into splitting road
         Given the node map
-            |   | a |   |   |
-            | g | b |   |   |
-            |   |   |   |   |
-            |   |   |   |   |
-            | c |   | d |   |
-            |   |   |   |   |
-            |   |   |   | e |
-            |   |   |   |   |
-            |   |   | f |   |
+        """
+              a
+            g-b
+              /\
+             /  \
+            c   d
+                |\
+                | e
+                |
+                f
+        """
 
         And the ways
             | nodes | name | highway | oneway |
@@ -52,12 +54,12 @@ Feature: Simple Turns
             | bg    | left | primary | yes    |
 
         When I route I should get
-            | waypoints | turns                           | route          |
-            | f,a       | depart,arrive                   | road,road      |
-            | e,a       | depart,turn slight right,arrive | turn,road,road |
-            | e,g       | depart,turn left,arrive         | turn,left,left |
-            | f,g       | depart,turn left,arrive         | road,left,left |
-            | f,c       | depart,continue uturn,arrive    | road,road,road |
+            | waypoints | turns                                     | route               |
+            | f,a       | depart,arrive                             | road,road           |
+            | e,a       | depart,turn slight right,arrive           | turn,road,road      |
+            | e,g       | depart,turn slight right,turn left,arrive | turn,road,left,left |
+            | f,g       | depart,turn left,arrive                   | road,left,left      |
+            | f,c       | depart,continue uturn,arrive              | road,road,road      |
 
     Scenario: Middle Island
         Given the node map
