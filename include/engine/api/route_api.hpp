@@ -95,7 +95,8 @@ class RouteAPI : public BaseAPI
             const bool reversed_target = target_traversed_in_reverse[idx];
 
             auto leg_geometry = guidance::assembleGeometry(
-                BaseAPI::facade, path_data, phantoms.source_phantom, phantoms.target_phantom);
+                BaseAPI::facade, path_data, phantoms.source_phantom, phantoms.target_phantom, reverse_source, reversed_target
+                );
             auto leg = guidance::assembleLeg(facade,
                                              path_data,
                                              leg_geometry,
