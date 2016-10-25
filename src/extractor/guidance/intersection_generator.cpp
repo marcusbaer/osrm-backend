@@ -1,3 +1,6 @@
+#include "util/geojson_debug_logger.hpp"
+#include "util/geojson_debug_policies.hpp"
+
 #include "extractor/guidance/intersection_generator.hpp"
 #include "extractor/guidance/constants.hpp"
 #include "extractor/guidance/toolkit.hpp"
@@ -375,6 +378,13 @@ bool IntersectionGenerator::CanMerge(const NodeID node_at_intersection,
 Intersection IntersectionGenerator::MergeSegregatedRoads(const NodeID intersection_node,
                                                          Intersection intersection) const
 {
+    std::vector<NodeID> test;
+    test.push_back(intersection_node);
+    test.push_back(intersection_node);
+    test.push_back(intersection_node);
+    test.push_back(intersection_node);
+    test.push_back(intersection_node);
+    util::GeojsonLogger<util::NodeIdVectorToLineString>::Write(test);
     const auto getRight = [&](std::size_t index) {
         return (index + intersection.size() - 1) % intersection.size();
     };
